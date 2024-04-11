@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticationMiddleware } from 'src/authentication/authentication.middleware';
+import { TasksService } from 'src/tasks/tasks.service';
 import { UsersModule } from 'src/users/users.module';
 import { Project } from './entities/project.entity';
 import { ProjectsController } from './projects.controller';
@@ -22,7 +23,8 @@ import { ProjectsService } from './projects.service';
     TypeOrmModule.forFeature([Project]),
   ],
   controllers: [ProjectsController],
-  providers: [ProjectsService],
+  providers: [ProjectsService, TasksService],
+  exports: [TypeOrmModule.forFeature([Project])],
 })
 export class ProjectsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

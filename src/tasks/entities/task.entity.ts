@@ -1,6 +1,12 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Project } from 'src/projects/entities/project.entity';
-import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Task {

@@ -1,26 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { User } from 'src/users/entities/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
+import { ProjectsService } from 'src/projects/projects.service';
+import { Task } from './entities/task.entity';
 
 @Injectable()
 export class TasksService {
-  create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
-  }
+  constructor(private readonly projectService: ProjectsService) {}
 
-  findAll() {
-    return `This action returns all tasks`;
-  }
+  async findAll(id: number, createTaskDto: CreateTaskDto, user: User): Promise<Task[]> {
+    const project = await this.projectService.findOne(id, user);
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
-  }
+    if (!project) throw new BadRequestException({ message: 'project not found' });
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
-  }
+    if (project.id !== user.id) throw new UnauthorizedException({ message: 'you are not owner' });
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+    return project.tasks;
   }
 }

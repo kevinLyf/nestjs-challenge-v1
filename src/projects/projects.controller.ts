@@ -1,15 +1,25 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
+import { CreateTaskDto } from 'src/tasks/dto/create-task.dto';
+import { TasksService } from 'src/tasks/tasks.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectsService } from './projects.service';
 
 @Controller('projects')
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly taskService: TasksService,
+  ) {}
 
   @Post()
   create(@Body() createProjectDto: CreateProjectDto, @Req() req) {
     return this.projectsService.create(createProjectDto, req['user']);
+  }
+
+  @Get(':id')
+  findOne(@Param(':id') id: number, @Req() req) {
+    return this.projectsService.findOne(id, req['user']);
   }
 
   @Get()
@@ -25,6 +35,11 @@ export class ProjectsController {
   @Get(':id/tasks')
   findTasks(@Param('id') id: number, @Req() req) {
     return this.projectsService.findTasks(id, req['user']);
+  }
+
+  @Post(':id/tasks')
+  createTask(@Param('id') id: number, createTaskDto: CreateTaskDto, @Req() req) {
+    return this.taskService.findAll(id, createTaskDto, req['user']);
   }
 
   @Delete(':id')

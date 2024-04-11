@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from 'src/tasks/entities/task.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -18,6 +19,21 @@ export class ProjectsService {
     return await this.projectRepository.save(project);
   }
 
+  async findOne(id: number, user: User): Promise<Project> {
+    return await this.projectRepository.findOne({
+      where: {
+        id,
+        user: {
+          id: user.id,
+        },
+      },
+
+      relations: {
+        tasks: true,
+      },
+    });
+  }
+
   async findAll(user: User): Promise<Project[]> {
     return await this.projectRepository.find({
       where: {
@@ -33,7 +49,11 @@ export class ProjectsService {
     });
   }
 
-  async update(id: number, updateProjectDto: UpdateProjectDto, user: User) {
+  async update(
+    id: number,
+    updateProjectDto: UpdateProjectDto,
+    user: User,
+  ): Promise<{ message: string }> {
     const project = await this.projectRepository.findOne({
       where: { id },
       relations: { user: true },
@@ -41,13 +61,14 @@ export class ProjectsService {
 
     if (!project) throw new BadRequestException({ message: 'project not found' });
 
-    if (project.user.id !== user.id) throw new UnauthorizedException({ message: 'you are not owner' });
+    if (project.user.id !== user.id)
+      throw new UnauthorizedException({ message: 'you are not owner' });
 
     await this.projectRepository.update(id, updateProjectDto);
     return { message: 'project successfully updated' };
   }
 
-  async remove(id: number, user: User) {
+  async remove(id: number, user: User): Promise<{ message: string }> {
     const project = await this.projectRepository.findOne({
       where: { id },
       relations: { user: true },
@@ -55,14 +76,15 @@ export class ProjectsService {
 
     if (!project) throw new BadRequestException({ message: 'project not found' });
 
-    if (project.user.id !== user.id) throw new UnauthorizedException({ message: 'you are not owner' });
+    if (project.user.id !== user.id)
+      throw new UnauthorizedException({ message: 'you are not owner' });
 
     await this.projectRepository.delete({ id });
 
     return { message: 'project successfully deleted' };
   }
 
-  async findTasks(id: number, user: User) {
+  async findTasks(id: number, user: User): Promise<Task[] | []> {
     const project = await this.projectRepository.findOne({
       where: { id },
       relations: { user: true, tasks: true },
@@ -70,7 +92,8 @@ export class ProjectsService {
 
     if (!project) throw new BadRequestException({ message: 'project not found' });
 
-    if (project.user.id !== user.id) throw new UnauthorizedException({ message: 'you are not owner' });
+    if (project.user.id !== user.id)
+      throw new UnauthorizedException({ message: 'you are not owner' });
 
     return project.tasks ?? [];
   }

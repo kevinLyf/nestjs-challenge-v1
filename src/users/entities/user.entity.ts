@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Project } from "src/projects/entities/project.entity";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('users')
 export class User {
@@ -10,4 +11,8 @@ export class User {
 
     @Column()
     password: string
+
+    @ManyToMany(() => Project)
+    @JoinTable()
+    projects: Project[];
 }

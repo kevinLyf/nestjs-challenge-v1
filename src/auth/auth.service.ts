@@ -27,7 +27,7 @@ export class AuthService {
       throw new NotFoundException({ message: 'email or password invalid' });
     }
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.id, id: user.id, email: user.email };
 
     return { access_token: await this.jwtService.signAsync(payload) };
   }

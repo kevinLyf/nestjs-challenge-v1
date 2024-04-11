@@ -1,15 +1,16 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticationMiddleware } from 'src/authentication/authentication.middleware';
+import { UsersModule } from 'src/users/users.module';
+import { Project } from './entities/project.entity';
 import { ProjectsController } from './projects.controller';
 import { ProjectsService } from './projects.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Project } from './entities/project.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project]),
+    UsersModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         global: true,
@@ -18,6 +19,7 @@ import { Project } from './entities/project.entity';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([Project]),
   ],
   controllers: [ProjectsController],
   providers: [ProjectsService],

@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -17,7 +16,7 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @CreateDateColumn({
@@ -33,7 +32,6 @@ export class User {
   })
   updated_at: Date;
 
-  @ManyToMany(() => Project)
-  @JoinTable()
+  @ManyToMany(() => Project, (project) => project.users)
   projects: Project[];
 }

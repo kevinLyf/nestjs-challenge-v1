@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: '60s' },
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],

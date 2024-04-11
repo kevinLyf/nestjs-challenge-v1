@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { UserService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthenticationMiddleware implements NestMiddleware {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private userService: UserService,
+  ) {}
 
   async use(req: Request, res: Response, next: () => void) {
     const authorization = req.headers.authorization.split(' ');
@@ -21,7 +25,9 @@ export class AuthenticationMiddleware implements NestMiddleware {
       throw new UnauthorizedException({ message: 'invalid authentication' });
 
     try {
-      await this.jwtService.verify(authorization[1]);
+      const payload = await this.jwtService.verifyAsync(authorization[1]);
+      req['user'] = await this.userService.findOneById(payload.id);
+      
       next();
     } catch (error) {
       throw new UnauthorizedException({ error: error });

@@ -1,43 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectRepository(Project) private projectRepository: Repository<Project>,
-    private jwtService: JwtService
   ) {}
 
-  async create(createProjectDto: CreateProjectDto) {
-    return await this.projectRepository.save(createProjectDto);
+  async create(createProjectDto: CreateProjectDto, user: User) {
+    const project: Project =
+      await this.projectRepository.create(createProjectDto);
+
+    project.users = [user];
+
+    return await this.projectRepository.save(project);
   }
 
-  async findAll(token: string) {
-    const payload = this.jwtService.decode(token);
-
+  async findAll(user: User) {
     return await this.projectRepository.find({
       where: {
         users: {
-          id: payload.id,
+          id: user.id,
         },
       },
+
+      relations: {
+        users: true,
+      },
     });
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} project`;
-  }
-
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} project`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} project`;
   }
 }

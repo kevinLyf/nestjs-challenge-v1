@@ -19,9 +19,16 @@ export class AuthService {
   async signIn(
     signInAuthDto: SignIpAuthDto,
   ): Promise<{ access_token: string }> {
-    const user = await this.userService.findOneByEmail(signInAuthDto.email);
+    const user = await this.userService.findOne({
+      where: { email: signInAuthDto.email },
+      select: { password: true },
+    });
 
-    if (!user) throw new BadRequestException({ message: 'email not found', statusCode: 400 });
+    if (!user)
+      throw new BadRequestException({
+        message: 'email not found',
+        statusCode: 400,
+      });
 
     if (!bcrypt.compareSync(signInAuthDto.password, user.password)) {
       throw new NotFoundException({ message: 'email or password invalid' });
@@ -33,9 +40,15 @@ export class AuthService {
   }
 
   async signUp(registerDto: SignUpAuthDto): Promise<User | undefined> {
-    const user = await this.userService.findOneByEmail(registerDto.email);
-    
-    if (user) throw new BadRequestException({ message: 'email in use', statusCode: 400 });
+    const user = await this.userService.findOne({
+      where: { email: registerDto.email },
+    });
+
+    if (user)
+      throw new BadRequestException({
+        message: 'email in use',
+        statusCode: 400,
+      });
 
     const password = await bcrypt.hash(registerDto.password, 10);
     const newUser = { email: registerDto.email, password };

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -35,11 +39,17 @@ export class ProjectsService {
     });
   }
 
-  async update(id: number, updateProjectDto: UpdateProjectDto) {
-    const project = await this.projectRepository.find({ where: { id } });
+  async update(id: number, updateProjectDto: UpdateProjectDto, user: User) {
+    const project = await this.projectRepository.findOne({
+      where: { id },
+      relations: { users: true },
+    });
 
-    if (project.length === 0)
+    if (!project)
       throw new BadRequestException({ message: 'project not found' });
+
+    if (project.users[0].id !== user.id)
+      throw new UnauthorizedException({ message: 'you are not owner' });
 
     return await this.projectRepository.update(id, updateProjectDto);
   }

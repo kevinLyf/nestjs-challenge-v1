@@ -51,6 +51,24 @@ export class ProjectsService {
     if (project.user.id !== user.id)
       throw new UnauthorizedException({ message: 'you are not owner' });
 
-    return await this.projectRepository.update(id, updateProjectDto);
+    await this.projectRepository.update(id, updateProjectDto);
+    return { message: 'project successfully updated' };
+  }
+
+  async remove(id: number, user: User) {
+    const project = await this.projectRepository.findOne({
+      where: { id },
+      relations: { user: true },
+    });
+
+    if (!project)
+      throw new BadRequestException({ message: 'project not found' });
+
+    if (project.user.id !== user.id)
+      throw new UnauthorizedException({ message: 'you are not owner' });
+
+    await this.projectRepository.delete({ id });
+
+    return { message: 'project successfully deleted' };
   }
 }

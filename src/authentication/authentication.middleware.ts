@@ -15,6 +15,9 @@ export class AuthenticationMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: () => void) {
+    if (!req.headers.authorization)
+      throw new UnauthorizedException({ message: 'invalid authentication' });
+
     const authorization = req.headers.authorization.split(' ');
 
     if (
@@ -32,7 +35,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
       });
 
       req['user'] = user;
-      
+
       next();
     } catch (error) {
       throw new UnauthorizedException({ error: error });

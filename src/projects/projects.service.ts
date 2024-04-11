@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
 
 @Injectable()
@@ -20,7 +21,7 @@ export class ProjectsService {
     return await this.projectRepository.save(project);
   }
 
-  async findAll(user: User) {
+  async findAll(user: User): Promise<Project[]> {
     return await this.projectRepository.find({
       where: {
         users: {
@@ -32,5 +33,14 @@ export class ProjectsService {
         users: true,
       },
     });
+  }
+
+  async update(id: number, updateProjectDto: UpdateProjectDto) {
+    const project = await this.projectRepository.find({ where: { id } });
+
+    if (project.length === 0)
+      throw new BadRequestException({ message: 'project not found' });
+
+    return await this.projectRepository.update(id, updateProjectDto);
   }
 }

@@ -1,25 +1,27 @@
-import { Task } from 'src/tasks/entities/task.entity';
-import { User } from 'src/users/entities/user.entity';
+import { IsBoolean, IsHexColor, IsNotEmpty, IsString } from 'class-validator';
+import { Project } from 'src/projects/entities/project.entity';
 import {
-  Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('projects')
-export class Project {
+@Entity()
+export class Task {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column()
+  @IsString()
+  @IsNotEmpty({ message: "name can't be empty" })
   name: string;
 
-  @Column()
-  description: string;
+  @IsHexColor()
+  color: number;
+
+  @IsBoolean()
+  isActive: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -34,10 +36,6 @@ export class Project {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.projects, { cascade: true })
-  @JoinTable()
-  user: User;
-
-  @ManyToOne(() => Task, (tasks) => tasks.project)
-  tasks: Task[];
+  @ManyToOne(() => Project, (project) => project)
+  project: Project;
 }

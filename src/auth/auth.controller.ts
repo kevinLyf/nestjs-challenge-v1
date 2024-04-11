@@ -8,9 +8,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  signIn(
-    @Body() signInAuthDto: SignIpAuthDto,
-  ): Promise<{ access_token: string }> {
+  signIn(@Body() signInAuthDto: SignIpAuthDto): Promise<{ access_token: string }> {
     return this.authService.signIn(signInAuthDto);
   }
 

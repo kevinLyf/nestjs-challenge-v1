@@ -1,12 +1,6 @@
-import { IsBoolean, IsHexColor, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Project } from 'src/projects/entities/project.entity';
-import {
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Task {
@@ -17,11 +11,9 @@ export class Task {
   @IsNotEmpty({ message: "name can't be empty" })
   name: string;
 
-  @IsHexColor()
-  color: number;
-
-  @IsBoolean()
-  isActive: boolean;
+  @IsString()
+  @IsNotEmpty({ message: "description can't be empty" })
+  description: string;
 
   @CreateDateColumn({
     type: 'timestamp',

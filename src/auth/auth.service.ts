@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/users/users.service';
 import { SignUpAuthDto } from './dto/signup-auth.dto';
@@ -16,9 +12,7 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async signIn(
-    signInAuthDto: SignIpAuthDto,
-  ): Promise<{ access_token: string }> {
+  async signIn(signInAuthDto: SignIpAuthDto): Promise<{ access_token: string }> {
     const user = await this.userService.findOne({
       where: { email: signInAuthDto.email },
       select: { id: true, email: true, password: true },

@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectsService } from './projects.service';
@@ -27,12 +18,13 @@ export class ProjectsController {
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: number,
-    @Body() updateProjectDto: UpdateProjectDto,
-    @Req() req,
-  ) {
+  update(@Param('id') id: number, @Body() updateProjectDto: UpdateProjectDto, @Req() req) {
     return this.projectsService.update(id, updateProjectDto, req['user']);
+  }
+
+  @Get(':id/tasks')
+  findTasks(@Param('id') id: number, @Req() req) {
+    return this.projectsService.findTasks(id, req['user']);
   }
 
   @Delete(':id')

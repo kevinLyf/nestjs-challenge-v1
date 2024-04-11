@@ -20,7 +20,7 @@ export class ProjectsService {
     const project: Project =
       await this.projectRepository.create(createProjectDto);
 
-    project.users = [user];
+    project.user = user;
 
     return await this.projectRepository.save(project);
   }
@@ -28,13 +28,13 @@ export class ProjectsService {
   async findAll(user: User): Promise<Project[]> {
     return await this.projectRepository.find({
       where: {
-        users: {
+        user: {
           id: user.id,
         },
       },
 
       relations: {
-        users: true,
+        user: true,
       },
     });
   }
@@ -42,13 +42,13 @@ export class ProjectsService {
   async update(id: number, updateProjectDto: UpdateProjectDto, user: User) {
     const project = await this.projectRepository.findOne({
       where: { id },
-      relations: { users: true },
+      relations: { user: true },
     });
 
     if (!project)
       throw new BadRequestException({ message: 'project not found' });
 
-    if (project.users[0].id !== user.id)
+    if (project.user.id !== user.id)
       throw new UnauthorizedException({ message: 'you are not owner' });
 
     return await this.projectRepository.update(id, updateProjectDto);

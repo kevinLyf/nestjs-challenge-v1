@@ -3,7 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,6 +32,6 @@ export class User {
   })
   updated_at: Date;
 
-  @ManyToMany(() => Project, (project) => project.users)
+  @OneToMany(() => Project, (project) => project.user)
   projects: Project[];
 }

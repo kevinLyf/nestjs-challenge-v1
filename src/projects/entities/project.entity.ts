@@ -4,10 +4,9 @@ import {
   CreateDateColumn,
   Entity,
   JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('projects')
@@ -34,7 +33,7 @@ export class Project {
   })
   updated_at: Date;
 
-  @ManyToMany(() => User, (user) => user.projects, { cascade: true })
+  @ManyToOne(() => User, (user) => user.projects, { cascade: true })
   @JoinTable()
-  users: User[];
+  user: User;
 }

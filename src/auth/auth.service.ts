@@ -21,7 +21,7 @@ export class AuthService {
   ): Promise<{ access_token: string }> {
     const user = await this.userService.findOne({
       where: { email: signInAuthDto.email },
-      select: { password: true },
+      select: { id: true, email: true, password: true },
     });
 
     if (!user)

@@ -26,7 +26,12 @@ export class AuthenticationMiddleware implements NestMiddleware {
 
     try {
       const payload = await this.jwtService.verifyAsync(authorization[1]);
-      req['user'] = await this.userService.findOneById(payload.id);
+
+      const user = await this.userService.findOne({
+        where: { id: payload.id },
+      });
+
+      req['user'] = user;
       
       next();
     } catch (error) {

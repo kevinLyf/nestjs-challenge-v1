@@ -4,22 +4,26 @@ import { Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectRepository(Project) private projectRepository: Repository<Project>,
+    private jwtService: JwtService
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
-    return 'This action adds a new project';
+    return await this.projectRepository.save(createProjectDto);
   }
 
-  async findAll() {
+  async findAll(token: string) {
+    const payload = this.jwtService.decode(token);
+
     return await this.projectRepository.find({
       where: {
         users: {
-          id: 1,
+          id: payload.id,
         },
       },
     });

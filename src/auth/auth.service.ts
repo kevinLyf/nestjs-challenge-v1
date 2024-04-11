@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/users/users.service';
-
+import { SignUpAuthDto } from './dto/signup-auth.dto';
+import { User } from 'src/users/entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { SignIpAuthDto } from './dto/signin-auth.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -14,17 +17,29 @@ export class AuthService {
   ) {}
 
   async signIn(
-    email: string,
-    password: string,
+    signInAuthDto: SignIpAuthDto,
   ): Promise<{ access_token: string }> {
-    const user = await this.userService.findOneByEmail(email);
+    const user = await this.userService.findOneByEmail(signInAuthDto.email);
 
-    if (user?.password !== password) {
-      throw new NotFoundException({ message: 'Email or password invalid!' });
+    if (!user) throw new BadRequestException({ message: 'email not found', statusCode: 400 });
+
+    if (!bcrypt.compareSync(signInAuthDto.password, user.password)) {
+      throw new NotFoundException({ message: 'email or password invalid' });
     }
 
     const payload = { sub: user.id, email: user.email };
 
     return { access_token: await this.jwtService.signAsync(payload) };
+  }
+
+  async signUp(registerDto: SignUpAuthDto): Promise<User | undefined> {
+    const user = await this.userService.findOneByEmail(registerDto.email);
+    
+    if (user) throw new BadRequestException({ message: 'email in use', statusCode: 400 });
+
+    const password = await bcrypt.hash(registerDto.password, 10);
+    const newUser = { email: registerDto.email, password };
+
+    return await this.userService.create(newUser);
   }
 }

@@ -8,7 +8,7 @@ import { Task } from './entities/task.entity';
 export class TasksService {
   constructor(private readonly projectService: ProjectsService) {}
 
-  async findAll(id: number, createTaskDto: CreateTaskDto, user: User): Promise<Task[]> {
+  async findAll(id: number, user: User): Promise<Task[]> {
     const project = await this.projectService.findOne(id, user);
 
     if (!project) throw new BadRequestException({ message: 'project not found' });

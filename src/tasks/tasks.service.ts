@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { User } from 'src/users/entities/user.entity';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { ProjectsService } from 'src/projects/projects.service';
-import { Task } from './entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProjectsService } from 'src/projects/projects.service';
+import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { Task } from './entities/task.entity';
 
 @Injectable()
 export class TasksService {
@@ -50,11 +51,36 @@ export class TasksService {
       throw new UnauthorizedException({ message: 'you are not owner' });
 
     const task = await this.taskRepository.findOne({ where: { id: taskId } });
-
+    
     if (!task) throw new BadRequestException({ message: 'this task not exists' });
 
     await this.taskRepository.remove(task);
 
     return { message: 'task successfully deleted' };
+  }
+
+  async update(
+    projectId: number,
+    taskId: number,
+    updateTaskDto: UpdateTaskDto,
+    user: User,
+  ): Promise<{ message: string }> {
+    const project = await this.projectService.findOne(projectId, user);
+
+    console.log({ name: updateTaskDto.name, description: updateTaskDto.description });
+
+    if (!project) throw new BadRequestException({ message: 'project not found' });
+    if (project.user.id !== user.id)
+      throw new UnauthorizedException({ message: 'you are not owner' });
+
+    const task = await this.taskRepository.findOne({ where: { id: taskId } });
+
+    if (!task) throw new BadRequestException({ message: 'this task not exists' });
+
+    await this.taskRepository.update(taskId, {
+      name: updateTaskDto.name,
+      description: updateTaskDto.description,
+    });
+    return { message: 'task successfully updated' };
   }
 }

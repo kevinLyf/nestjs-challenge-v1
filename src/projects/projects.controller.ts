@@ -38,8 +38,18 @@ export class ProjectsController {
   }
 
   @Post(':id/tasks')
-  createTask(@Param('id') id: number,@Body() createTaskDto: CreateTaskDto, @Req() req) {
+  createTask(@Param('id') id: number, @Body() createTaskDto: CreateTaskDto, @Req() req) {
     return this.taskService.create(id, createTaskDto, req['user']);
+  }
+
+  @Put(':projectId/tasks/:taskId')
+  updateTask(
+    @Body() updateTaskDto: CreateTaskDto,
+    @Param('projectId') projectId: number,
+    @Param('taskId') taskId: number,
+    @Req() req,
+  ) {
+    return this.taskService.update(projectId, taskId, updateTaskDto, req['user']);
   }
 
   @Delete(':id')

@@ -46,4 +46,9 @@ export class ProjectsController {
   remove(@Param('id') id: number, @Req() req) {
     return this.projectsService.remove(id, req['user']);
   }
+
+  @Delete(':projectId/tasks/:taskId')
+  removeTask(@Param('projectId') projectId: number, @Param('taskId') taskId: number, @Req() req) {
+    return this.taskService.remove(projectId, taskId, req['user']);
+  }
 }

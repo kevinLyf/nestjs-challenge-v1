@@ -1,8 +1,10 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Project } from 'src/projects/entities/project.entity';
 import {
+  Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -13,12 +15,10 @@ export class Task {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @IsString()
-  @IsNotEmpty({ message: "name can't be empty" })
+  @Column()
   name: string;
 
-  @IsString()
-  @IsNotEmpty({ message: "description can't be empty" })
+  @Column()
   description: string;
 
   @CreateDateColumn({
@@ -34,6 +34,7 @@ export class Task {
   })
   updated_at: Date;
 
-  @ManyToOne(() => Project, (project) => project)
+  @ManyToOne(() => Project, (project) => project.tasks, { cascade: true })
+  @JoinTable()
   project: Project;
 }

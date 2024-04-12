@@ -8,6 +8,7 @@ import { UsersModule } from 'src/users/users.module';
 import { Project } from './entities/project.entity';
 import { ProjectsController } from './projects.controller';
 import { ProjectsService } from './projects.service';
+import { Task } from 'src/tasks/entities/task.entity';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ProjectsService } from './projects.service';
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([Project]),
+    TypeOrmModule.forFeature([Task]),
   ],
   controllers: [ProjectsController],
   providers: [ProjectsService, TasksService],

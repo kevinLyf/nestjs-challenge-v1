@@ -13,7 +13,6 @@ export class ProjectsService {
 
   async create(createProjectDto: CreateProjectDto, user: User) {
     const project: Project = await this.projectRepository.create(createProjectDto);
-
     project.user = user;
 
     return await this.projectRepository.save(project);
@@ -30,6 +29,7 @@ export class ProjectsService {
 
       relations: {
         tasks: true,
+        user: true
       },
     });
   }

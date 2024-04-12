@@ -37,6 +37,11 @@ export class ProjectsController {
     return this.taskService.findAll(id, req['user']);
   }
 
+  @Post(':id/tasks')
+  createTask(@Param('id') id: number,@Body() createTaskDto: CreateTaskDto, @Req() req) {
+    return this.taskService.create(id, createTaskDto, req['user']);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: number, @Req() req) {
     return this.projectsService.remove(id, req['user']);

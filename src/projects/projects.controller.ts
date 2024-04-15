@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
-import { AuthenticationGuard } from 'src/guards/authentication/authentication.guard';
-import { ProjectOwnerGuard } from 'src/guards/project-owner/project-owner.guard';
-import { CreateTaskDto } from 'src/tasks/dto/create-task.dto';
-import { TasksService } from 'src/tasks/tasks.service';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
-import { ProjectsService } from './projects.service';
+import { AuthenticationGuard } from '../guards/authentication/authentication.guard';
+import { ProjectOwnerGuard } from '../guards/project-owner/project-owner.guard';
+import { CreateTaskDto } from '../tasks/dto/create-task.dto';
+import { TasksService } from '../tasks/tasks.service';
+import { CreateProjectDto } from '../projects/dto/create-project.dto';
+import { UpdateProjectDto } from '../projects/dto/update-project.dto';
+import { ProjectsService } from '../projects/projects.service';
 
 @UseGuards(AuthenticationGuard)
 @Controller('projects')

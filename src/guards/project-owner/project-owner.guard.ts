@@ -6,21 +6,16 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Observable } from 'rxjs';
-import { Project } from 'src/projects/entities/project.entity';
-import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { Project } from '../../projects/entities/project.entity';
 
 @Injectable()
 export class ProjectOwnerGuard implements CanActivate {
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<Project>,
-    @InjectRepository(Project) private readonly projectRepository: Repository<Project>,
-  ) {}
+  constructor(@InjectRepository(Project) private projectRepository: Repository<Project>) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    
+
     const id = request.params.id;
     const user = request['user'];
 

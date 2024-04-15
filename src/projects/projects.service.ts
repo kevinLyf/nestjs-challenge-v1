@@ -1,11 +1,11 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Task } from 'src/tasks/entities/task.entity';
-import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
-import { Project } from './entities/project.entity';
+import { CreateProjectDto } from '../projects/dto/create-project.dto';
+import { UpdateProjectDto } from '../projects/dto/update-project.dto';
+import { Project } from '../projects/entities/project.entity';
+import { Task } from '../tasks/entities/task.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class ProjectsService {

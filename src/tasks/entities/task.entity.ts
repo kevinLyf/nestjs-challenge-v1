@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Project } from 'src/projects/entities/project.entity';
+import { Project } from '../../projects/entities/project.entity';
 import {
   Column,
   CreateDateColumn,

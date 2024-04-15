@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProjectsService } from 'src/projects/projects.service';
-import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { ProjectsService } from '../projects/projects.service';
+import { User } from '../users/entities/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
@@ -51,7 +51,7 @@ export class TasksService {
       throw new UnauthorizedException({ message: 'you are not owner' });
 
     const task = await this.taskRepository.findOne({ where: { id: taskId } });
-    
+
     if (!task) throw new BadRequestException({ message: 'this task not exists' });
 
     await this.taskRepository.remove(task);

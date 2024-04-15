@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Task } from 'src/tasks/entities/task.entity';
-import { TasksService } from 'src/tasks/tasks.service';
-import { UsersModule } from 'src/users/users.module';
-import { Project } from './entities/project.entity';
-import { ProjectsController } from './projects.controller';
-import { ProjectsService } from './projects.service';
-import { User } from 'src/users/entities/user.entity';
+import { Project } from '../projects/entities/project.entity';
+import { ProjectsController } from '../projects/projects.controller';
+import { ProjectsService } from '../projects/projects.service';
+import { Task } from '../tasks/entities/task.entity';
+import { TasksService } from '../tasks/tasks.service';
+import { User } from '../users/entities/user.entity';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [

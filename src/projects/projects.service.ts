@@ -29,7 +29,7 @@ export class ProjectsService {
 
       relations: {
         tasks: true,
-        user: true
+        user: true,
       },
     });
   }
@@ -49,52 +49,21 @@ export class ProjectsService {
     });
   }
 
-  async update(
-    id: number,
-    updateProjectDto: UpdateProjectDto,
-    user: User,
-  ): Promise<{ message: string }> {
-    const project = await this.projectRepository.findOne({
-      where: { id },
-      relations: { user: true },
-    });
-
-    if (!project) throw new BadRequestException({ message: 'project not found' });
-
-    if (project.user.id !== user.id)
-      throw new UnauthorizedException({ message: 'you are not owner' });
-
+  async update(id: number, updateProjectDto: UpdateProjectDto): Promise<{ message: string }> {
     await this.projectRepository.update(id, updateProjectDto);
     return { message: 'project successfully updated' };
   }
 
-  async remove(id: number, user: User): Promise<{ message: string }> {
-    const project = await this.projectRepository.findOne({
-      where: { id },
-      relations: { user: true },
-    });
-
-    if (!project) throw new BadRequestException({ message: 'project not found' });
-
-    if (project.user.id !== user.id)
-      throw new UnauthorizedException({ message: 'you are not owner' });
-
+  async remove(id: number): Promise<{ message: string }> {
     await this.projectRepository.delete({ id });
-
     return { message: 'project successfully deleted' };
   }
 
-  async findTasks(id: number, user: User): Promise<Task[] | []> {
+  async findTasks(id: number): Promise<Task[] | []> {
     const project = await this.projectRepository.findOne({
       where: { id },
       relations: { user: true, tasks: true },
     });
-
-    if (!project) throw new BadRequestException({ message: 'project not found' });
-
-    if (project.user.id !== user.id)
-      throw new UnauthorizedException({ message: 'you are not owner' });
-
     return project.tasks ?? [];
   }
 }

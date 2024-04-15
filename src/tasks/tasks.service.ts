@@ -67,8 +67,6 @@ export class TasksService {
   ): Promise<{ message: string }> {
     const project = await this.projectService.findOne(projectId, user);
 
-    console.log({ name: updateTaskDto.name, description: updateTaskDto.description });
-
     if (!project) throw new BadRequestException({ message: 'project not found' });
     if (project.user.id !== user.id)
       throw new UnauthorizedException({ message: 'you are not owner' });

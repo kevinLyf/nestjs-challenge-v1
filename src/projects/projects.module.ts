@@ -1,14 +1,14 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthenticationMiddleware } from 'src/authentication/authentication.middleware';
+import { Task } from 'src/tasks/entities/task.entity';
 import { TasksService } from 'src/tasks/tasks.service';
 import { UsersModule } from 'src/users/users.module';
 import { Project } from './entities/project.entity';
 import { ProjectsController } from './projects.controller';
 import { ProjectsService } from './projects.service';
-import { Task } from 'src/tasks/entities/task.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
@@ -21,15 +21,10 @@ import { Task } from 'src/tasks/entities/task.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Project]),
-    TypeOrmModule.forFeature([Task]),
+    TypeOrmModule.forFeature([Project, Task, User]),
   ],
   controllers: [ProjectsController],
   providers: [ProjectsService, TasksService],
   exports: [TypeOrmModule.forFeature([Project])],
 })
-export class ProjectsModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthenticationMiddleware).forRoutes('projects');
-  }
-}
+export class ProjectsModule {}

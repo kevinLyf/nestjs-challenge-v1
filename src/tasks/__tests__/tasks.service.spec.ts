@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Task } from './entities/task.entity';
-import { TasksService } from './tasks.service';
+import { Task } from '../entities/task.entity';
+import { TasksService } from '../tasks.service';
 
 const taskServiceMock = {
   findAll: jest.fn(),
